@@ -12,7 +12,7 @@ public class InfoCommand implements Command {
     private static String DESC = "вывести в стандартный поток вывода информацию о коллекции (тип, дата инициализации, количество элементов и т.д.)";
 
     @Override
-    public void execute(ReadModes readMode) {
+    public void execute(ReadModes readMode, String[] args) {
         if (readMode == ReadModes.CONSOLE) {
             RouteManager rm = RouteManager.getInstance();
             PriorityQueue<Route> collection = rm.getCollection();
