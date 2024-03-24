@@ -1,6 +1,6 @@
 package commandManagers.commands;
 
-import Exceptions.AlreadyUsedIdException;
+import Exceptions.FailedValidationException;
 import entity.Route;
 import enums.ReadModes;
 import input.InputManager;
@@ -31,7 +31,7 @@ public class AddCommand implements Command {
             Route element = JSONManager.readElement(path);
             try {
                 RouteManager.getInstance().addElement(element);
-            } catch (AlreadyUsedIdException e) {
+            } catch (FailedValidationException e) {
                 System.out.println(e.getMessage());
                 return;
             }

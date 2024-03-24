@@ -19,6 +19,8 @@ public class JSONManager {
         try {
             Route element = gson.fromJson(new InputStreamReader(new FileInputStream(path)), Route.class);
             JsonObject jsonObject = gson.fromJson(new InputStreamReader(new FileInputStream(path)), JsonObject.class);
+            // если id изначально не было, то поменять тот 0, который дал gson, на автоматический
+//            System.out.println(element);
             JsonElement id = jsonObject.get("id");
             if (id == null) {
                 element.setId(IdManager.getId());

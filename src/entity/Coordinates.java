@@ -9,6 +9,22 @@ public class Coordinates {
         this.y = y;
     }
 
+    public double getX() {
+        return x;
+    }
+
+    public void setX(double x) {
+        this.x = x;
+    }
+
+    public Integer getY() {
+        return y;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
+    }
+
     public static boolean checkX(double x) {
         return (x <= 790);
     }

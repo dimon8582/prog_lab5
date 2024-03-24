@@ -12,6 +12,39 @@ public class LocationTo {
         this.y = y;
         this.z = z;
     }
+
+    public float getX() {
+        return x;
+    }
+
+    public void setX(float x) {
+        this.x = x;
+    }
+
+    public Integer getY() {
+        return y;
+    }
+
+    public void setY(Integer y) {
+        this.y = y;
+    }
+
+    public long getZ() {
+        return z;
+    }
+
+    public void setZ(long z) {
+        this.z = z;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
     public static boolean checkX(float x) {
         return true;
     }

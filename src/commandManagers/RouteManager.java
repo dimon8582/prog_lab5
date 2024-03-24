@@ -1,7 +1,10 @@
 package commandManagers;
 
-import Exceptions.AlreadyUsedIdException;
+import Exceptions.FailedValidationException;
 import builders.RouteBuilder;
+import entity.Coordinates;
+import entity.LocationFrom;
+import entity.LocationTo;
 import entity.Route;
 import input.InputManager;
 import input.JSONManager;
@@ -49,19 +52,25 @@ public class RouteManager {
         return collection;
     }
 
-    public void addElement(Route el) throws AlreadyUsedIdException{
-        if (getIds().stream().allMatch(id -> id != el.getId())) {
+    public void addElement(Route el) throws FailedValidationException {
+        addElement(el, false);
+    }
+
+    public void addElement(Route el, boolean skipValidations) throws FailedValidationException {
+        if (skipValidations) {
             collection.add(el);
         } else {
-            throw new AlreadyUsedIdException("Этот id уже есть в коллекции!");
+            if (RouteManager.validateElement(el)) {
+                collection.add(el);
+            } else {
+                throw new FailedValidationException("Ошибка в валидации");
+            }
         }
     }
+
     public void buildNew(BufferedReader reader) throws IOException {
         Route element = RouteBuilder.build(reader);
         addElement(element);
-    }
-    public void updateById(long id, Route el) {
-
     }
 
     public List<Long> getIds() {
@@ -78,5 +87,63 @@ public class RouteManager {
         PriorityQueue<Route> collection = new PriorityQueue<>();
         collection.addAll(Arrays.asList(array));
         return collection;
+    }
+
+    public static boolean validateElement(Route el, boolean skipId) {
+        if (!skipId) {
+            if (!Route.checkId(el.getId())) {
+                System.out.println("Неверный id (возможно, он уже занят)");
+                return false;
+            }
+        }
+
+        if (!Route.checkName(el.getName())) {
+            System.out.println("Неверное имя элемента (Поле не может быть null, Строка не может быть пустой)");
+            return false;
+        }
+
+        if (!Route.checkCreationDate(el.getCreationDate())) {
+            System.out.println("Неверная дата создания (Поле не может быть null)");
+            return false;
+        }
+
+        Coordinates coordinates = el.getCoordinates();
+        if (!Route.checkCoordinates(coordinates)) {
+            System.out.println("Некорректные координаты (Поле не может быть null)");
+            return false;
+        }
+        if (!Coordinates.checkX(coordinates.getX()) || !Coordinates.checkY(coordinates.getY())) {
+            System.out.println("Некорректные координаты (x: Максимальное значение поля: 790, y: Значение поля должно быть больше -858, Поле не может быть null");
+            return false;
+        }
+
+        LocationFrom from = el.getFrom();
+        if (!Route.checkFrom(from)) {
+            System.out.println("Некорректная изначальная локация (Поле не может быть null)");
+            return false;
+        }
+        if (!LocationFrom.checkY(from.getY())) {
+            System.out.println("Некорректная изначальная локация (y: Поле не может быть null");
+            return false;
+        }
+
+        LocationTo to = el.getTo();
+        if (to != null) {
+            if (!LocationTo.checkY(to.getY()) || !LocationTo.checkName(to.getName())) {
+                System.out.println("Некорректная окончательная локация (y: Поле не может быть null, name: Длина строки не должна быть больше 443, Поле не может быть null)");
+                return false;
+            }
+        }
+
+        if (!Route.checkDistance(el.getDistance())) {
+            System.out.println("Некорректная дистанция (Значение поля должно быть больше 1)");
+            return false;
+        }
+
+        return true;
+    }
+
+    public static boolean validateElement(Route el) {
+        return validateElement(el, false);
     }
 }
