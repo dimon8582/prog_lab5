@@ -51,7 +51,6 @@ public class CommandInvoker {
         Command command = commands.get(tokens[0]);
         command.execute(readMode, Arrays.copyOfRange(tokens, 1, tokens.length));
     }
-
     public Map<String, Command> getCommands() {
         return commands;
     }

@@ -20,6 +20,7 @@ public class HelpCommand implements Command {
         }
     }
 
+
     @Override
     public String getDesc() {
         return DESC;

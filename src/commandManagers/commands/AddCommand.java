@@ -24,6 +24,7 @@ public class AddCommand implements Command {
             System.out.println("Добавлен элемент в коллекцию");
         } else if (readMode == ReadModes.FILE) {
 //            rm.readNew(); // если с файла
+
         }
     }
 

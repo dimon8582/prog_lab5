@@ -22,7 +22,6 @@ public class ExecuteScriptCommand implements Command {
                         invoker.runCommand(line, readMode);
                     }
 //                } else {
-//
 //                }
             } catch (IOException e) {
 //                throw new RuntimeException(e);

@@ -8,6 +8,7 @@ import java.util.Scanner;
 
 public class CoordinatesBuilder {
     public static Coordinates build(BufferedReader reader) throws IOException {
+
         System.out.println("Настройка координат...");
 
         System.out.println("Введите x (double) > ");
