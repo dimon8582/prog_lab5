@@ -16,6 +16,8 @@ public class CommandInvoker {
     private static CommandInvoker instance;
 
     private CommandInvoker() {
+        RouteManager.getInstance();
+
         commands = new HashMap<String, Command>();
 
         commands.put("help", new HelpCommand());

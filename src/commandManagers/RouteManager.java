@@ -8,10 +8,7 @@ import input.JSONManager;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 // Receiver
@@ -24,8 +21,15 @@ public class RouteManager {
         String collectionFilePath = InputManager.getCollectionFilePath();
         if (collectionFilePath == null) {
             this.collection = new PriorityQueue<>();
+            System.out.println("Коллекция не была загружена из файла");
         } else {
             this.collection = JSONManager.readCollection(collectionFilePath);
+            if (checkIdUniqueness()) {
+                System.out.println("Коллекция была загружена из файла");
+            } else {
+                this.collection = new PriorityQueue<>();
+                System.out.println("Ошибка при загрузке из файла: были обнаружены одинаковые id у элементов");
+            }
         }
     }
 
@@ -62,6 +66,12 @@ public class RouteManager {
 
     public List<Long> getIds() {
         return collection.stream().map(Route::getId).collect(Collectors.toList());
+    }
+
+    public boolean checkIdUniqueness() {
+        ArrayList<Long> ids = (ArrayList<Long>) getIds();
+        Set<Long> idSet = new HashSet<>(ids);
+        return (idSet.size() == ids.size());
     }
 
     public static PriorityQueue<Route> convertFrom(Route[] array) {

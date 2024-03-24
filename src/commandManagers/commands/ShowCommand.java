@@ -16,8 +16,12 @@ public class ShowCommand implements Command {
         if (readMode == ReadModes.CONSOLE) {
             RouteManager rm = RouteManager.getInstance();
             PriorityQueue<Route> collection = rm.getCollection();
-            for (int i = 0; i < collection.size(); i++) {
-                System.out.printf("Элемент %s / %s:\n%s\n", i + 1, collection.size(), collection.toArray()[i]);
+            if (collection.size() == 0) {
+                System.out.println("Коллекция пуста!");
+            } else {
+                for (int i = 0; i < collection.size(); i++) {
+                    System.out.printf("Элемент %s / %s:\n%s\n", i + 1, collection.size(), collection.toArray()[i]);
+                }
             }
         }
     }
