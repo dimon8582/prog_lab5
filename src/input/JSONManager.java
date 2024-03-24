@@ -6,6 +6,8 @@ import commandManagers.RouteManager;
 import entity.Route;
 
 import java.io.*;
+import java.util.Arrays;
+import java.util.LinkedList;
 import java.util.PriorityQueue;
 
 public class JSONManager {
@@ -31,5 +33,16 @@ public class JSONManager {
         PriorityQueue<Route> collection = RouteManager.getInstance().getCollection();
         String json = gson.toJson(collection);
         InputManager.write(path, json);
+    }
+
+    public static PriorityQueue<Route> readCollection(String path) throws RuntimeException{
+        Gson gson = new Gson();
+        Route[] arrayCollection;
+        try {
+            arrayCollection = gson.fromJson(new InputStreamReader(new FileInputStream(path)), Route[].class);
+            return RouteManager.convertFrom(arrayCollection);
+        } catch (FileNotFoundException e) {
+            throw new RuntimeException("Файл не найден");
+        }
     }
 }

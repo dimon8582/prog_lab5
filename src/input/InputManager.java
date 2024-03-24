@@ -5,10 +5,6 @@ import java.io.*;
 public class InputManager {
     private static BufferedReader consoleReader;
 
-//    public static BufferedReader getReader(InputStream inputStream) {
-//        return new BufferedReader(new InputStreamReader(inputStream));
-//    }
-
     public static BufferedReader getConsoleReader() {
         if (consoleReader == null) {
             consoleReader = new BufferedReader(new InputStreamReader(System.in));
@@ -30,5 +26,9 @@ public class InputManager {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static String getCollectionFilePath() {
+        return System.getenv("JAVA_COLLECTION_PATH");
     }
 }
