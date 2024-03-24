@@ -9,6 +9,14 @@ public class Coordinates {
         this.y = y;
     }
 
+    public static boolean checkX(double x) {
+        return (x <= 790);
+    }
+
+    public static boolean checkY(Integer y) {
+        return (y != null && y > -858);
+    }
+
     @Override
     public String toString() {
         return "Coordinates{" +

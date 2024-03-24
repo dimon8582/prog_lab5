@@ -11,17 +11,43 @@ public class LocationToBuilder {
     public static LocationTo build(BufferedReader reader) throws IOException {
         System.out.println("Настройка окончательной локации...");
 
-        System.out.println("Введите имя окончательной локации (String) > ");
-        String name = reader.readLine();
+        String name;
+        do {
+            System.out.println("Введите имя окончательной локации (String, не null, длина не больше 443) > ");
+            name = reader.readLine();
+        } while (!LocationTo.checkName(name));
 
-        System.out.println("Введите x (float) > ");
-        float x = Float.parseFloat(reader.readLine());
+        float x;
+        while (true) {
+            System.out.println("Введите x (float) > ");
+            try {
+                x = Float.parseFloat(reader.readLine());
+            } catch (NumberFormatException e) {
+                continue;
+            }
+            if (LocationTo.checkX(x)) break;
+        }
 
-        System.out.println("Введите y (Integer) > ");
-        Integer y = Integer.parseInt(reader.readLine());
+        Integer y = null;
+        do {
+            System.out.println("Введите y (Integer, не null) > ");
+            try {
+                y = Integer.parseInt(reader.readLine());
+            } catch (NumberFormatException e) {
+                continue;
+            }
+        } while (!LocationTo.checkY(y));
 
-        System.out.println("Введите z (long) > ");
-        long z = Long.parseLong(reader.readLine());
+        long z;
+        while (true) {
+            System.out.println("Введите z (long) > ");
+            try {
+                z = Long.parseLong(reader.readLine());
+            } catch (NumberFormatException e) {
+                continue;
+            }
+            if (LocationTo.checkZ(z)) break;
+        }
 
         System.out.println("Окончательная локация настроена");
         return new LocationTo(name, x, y, z);

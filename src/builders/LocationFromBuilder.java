@@ -11,14 +11,37 @@ public class LocationFromBuilder {
     public static LocationFrom build(BufferedReader reader) throws IOException {
         System.out.println("Настройка изначальной локации...");
 
+        int x;
         System.out.println("Введите x (int) > ");
-        int x = Integer.parseInt(reader.readLine());
+        while (true) {
+            try {
+                x = Integer.parseInt(reader.readLine());
+            } catch (NumberFormatException e) {
+                continue;
+            }
+            if (LocationFrom.checkX(x)) break;
+        }
 
-        System.out.println("Введите y (Integer) > ");
-        Integer y = Integer.parseInt(reader.readLine());
+        Integer y = null;
+        do {
+            System.out.println("Введите y (Integer, не null) > ");
+            try {
+                y = Integer.parseInt(reader.readLine());
+            } catch (NumberFormatException e) {
+                continue;
+            }
+        } while (!LocationFrom.checkY(y));
 
-        System.out.println("Введите z (float) > ");
-        float z = Float.parseFloat(reader.readLine());
+        float z;
+        while (true) {
+            System.out.println("Введите z (float) > ");
+            try {
+                z = Float.parseFloat(reader.readLine());
+            } catch (NumberFormatException e) {
+                continue;
+            }
+            if (LocationFrom.checkZ(z)) break;
+        }
 
         System.out.println("Изначальная локация настроена");
         return new LocationFrom(x, y, z);

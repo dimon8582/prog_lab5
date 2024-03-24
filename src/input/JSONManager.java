@@ -2,8 +2,11 @@ package input;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonObject;
 import commandManagers.RouteManager;
 import entity.Route;
+import util.IdManager;
 
 import java.io.*;
 import java.util.Arrays;
@@ -15,6 +18,11 @@ public class JSONManager {
         Gson gson = new Gson();
         try {
             Route element = gson.fromJson(new InputStreamReader(new FileInputStream(path)), Route.class);
+            JsonObject jsonObject = gson.fromJson(new InputStreamReader(new FileInputStream(path)), JsonObject.class);
+            JsonElement id = jsonObject.get("id");
+            if (id == null) {
+                element.setId(IdManager.getId());
+            }
             return element;
         } catch (FileNotFoundException e) {
             System.out.println("Не удалось считать из файла json");

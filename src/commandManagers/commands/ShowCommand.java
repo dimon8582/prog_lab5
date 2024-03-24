@@ -16,7 +16,7 @@ public class ShowCommand implements Command {
         if (readMode == ReadModes.CONSOLE) {
             RouteManager rm = RouteManager.getInstance();
             PriorityQueue<Route> collection = rm.getCollection();
-            if (collection.size() == 0) {
+            if (collection.isEmpty()) {
                 System.out.println("Коллекция пуста!");
             } else {
                 for (int i = 0; i < collection.size(); i++) {

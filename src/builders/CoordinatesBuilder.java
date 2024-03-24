@@ -11,11 +11,26 @@ public class CoordinatesBuilder {
 
         System.out.println("Настройка координат...");
 
-        System.out.println("Введите x (double) > ");
-        double x = Double.parseDouble(reader.readLine());
+        double x;
+        while (true) {
+            System.out.println("Введите x (double, макс. 790) > ");
+            try {
+                x = Double.parseDouble(reader.readLine());
+            } catch (NumberFormatException e) {
+                continue;
+            }
+            if (Coordinates.checkX(x)) break;
+        }
 
-        System.out.println("Введите y (Integer) > ");
-        Integer y = Integer.parseInt(reader.readLine());
+        Integer y = null;
+        do {
+            System.out.println("Введите y (Integer, не null, больше -858) > ");
+            try {
+                y = Integer.parseInt(reader.readLine());
+            } catch (NumberFormatException e) {
+                continue;
+            }
+        } while (!Coordinates.checkY(y));
 
         System.out.println("Координаты настроены");
         return new Coordinates(x, y);

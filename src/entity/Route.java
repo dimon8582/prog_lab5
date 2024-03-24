@@ -1,5 +1,6 @@
 package entity;
 
+import commandManagers.RouteManager;
 import util.IdManager;
 
 import java.util.Date;
@@ -25,6 +26,10 @@ public class Route implements Comparable {
 
     public long getId() {
         return id;
+    }
+
+    public void setId(long id) {
+        this.id = id;
     }
 
     public String getName() {
@@ -70,6 +75,30 @@ public class Route implements Comparable {
     public void setCoordinates(Coordinates coordinates) {
         this.coordinates = coordinates;
     }
+
+
+    public static boolean checkId(long id) {
+        return (id > 0 && !RouteManager.getInstance().getIds().contains(id));
+    }
+    public static boolean checkName(String name) {
+        return (name != null && !name.isEmpty());
+    }
+    public static boolean checkCoordinates(Coordinates coordinates) {
+        return (coordinates != null);
+    }
+    public static boolean checkCreationDate(Date creationDate) {
+        return (creationDate != null);
+    }
+    public static boolean checkFrom(LocationFrom from) {
+        return (from != null);
+    }
+    public static boolean checkTo(LocationTo to) {
+        return true;
+    }
+    public static boolean checkDistance(double distance) {
+        return (distance > 1);
+    }
+
 
 
     @Override

@@ -11,6 +11,17 @@ public class LocationFrom {
         this.z = z;
     }
 
+    public static boolean checkX(int x) {
+        return true;
+    }
+
+    public static boolean checkY(Integer y) {
+        return (y != null);
+    }
+    public static boolean checkZ(float z) {
+        return true;
+    }
+
     @Override
     public String toString() {
         return "LocationFrom{" +
