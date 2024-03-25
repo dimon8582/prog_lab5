@@ -14,6 +14,7 @@ public class ExecuteScriptCommand implements Command {
     public void execute(ReadModes readMode, String[] args) {
         if (args.length == 1) {
             String path = args[0];
+            path = path.replaceAll("\"","");
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)))) {
 //                if (readMode == ReadModes.CONSOLE) {
                     CommandInvoker invoker = CommandInvoker.getInstance();

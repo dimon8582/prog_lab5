@@ -2,6 +2,7 @@ package commandManagers;
 
 import Exceptions.FailedValidationException;
 import builders.RouteBuilder;
+import comparators.RouteComparator;
 import entity.Coordinates;
 import entity.LocationFrom;
 import entity.LocationTo;
@@ -9,6 +10,7 @@ import entity.Route;
 import input.InputManager;
 import input.JSONManager;
 
+import javax.sound.midi.Soundbank;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.*;
@@ -28,7 +30,12 @@ public class RouteManager {
         } else {
             this.collection = JSONManager.readCollection(collectionFilePath);
             if (checkIdUniqueness()) {
-                System.out.println("Коллекция была загружена из файла");
+                if (this.collection.stream().allMatch(RouteManager::validateElement)) {
+                    System.out.println("Коллекция была загружена из файла");
+                } else {
+                    System.out.println("Ошибка при загрузке из файла: Некоторые элементы из коллекции некорректны");
+                    this.collection = new PriorityQueue<>();
+                }
             } else {
                 this.collection = new PriorityQueue<>();
                 System.out.println("Ошибка при загрузке из файла: были обнаружены одинаковые id у элементов");
@@ -44,12 +51,24 @@ public class RouteManager {
         return instance;
     }
 
+    public static boolean isInitialized() {
+        return (instance != null);
+    }
+
     public Date getInitializationDate() {
         return initializationDate;
     }
 
     public PriorityQueue<Route> getCollection() {
         return collection;
+    }
+
+    public Route getById(long id) {
+        return collection.stream().filter(el -> el.getId() == id).findFirst().orElse(null);
+    }
+
+    public boolean hasElement(long id) {
+        return (getById(id) != null);
     }
 
     public void addElement(Route el) throws FailedValidationException {
@@ -68,33 +87,91 @@ public class RouteManager {
         }
     }
 
-    public void buildNew(BufferedReader reader) throws IOException {
-        Route element = RouteBuilder.build(reader);
-        addElement(element);
+    public static Route buildNew(BufferedReader reader, boolean withId) throws IOException {
+        return RouteBuilder.build(reader, withId);
+    }
+
+    public static Route buildNew(BufferedReader reader) throws IOException {
+        return buildNew(reader, false);
+    }
+
+    /**
+     * если пользователь не поставил id, то JSONManager выдаёт ему свой, и под условие ниже он не попадает и добавляется
+     * если ввёл id, чтобы заменить элемент с этим id, то прошлый элемент удаляется и новый добавляется
+     */
+    public void update(Route element, boolean skipValidations) throws FailedValidationException {
+        long id = element.getId();
+        if (getIds().contains(id)) {
+            removeElement(id);
+        }
+        addElement(element, skipValidations);
+    }
+
+    public void update(Route element) throws FailedValidationException {
+        update(element, false);
+    }
+
+    public void removeElement(long id) {
+        removeElement(getById(id));
+    }
+
+    public void removeElement(Route route) {
+        List<Route> list = convertToList(collection);
+        list.remove(route);
+        collection = convertFromList(list);
     }
 
     public List<Long> getIds() {
         return collection.stream().map(Route::getId).collect(Collectors.toList());
     }
 
+    /**
+     * Проверить уникальность коллекции
+     *
+     * @return true, если уникальна, иначе false
+     */
     public boolean checkIdUniqueness() {
         ArrayList<Long> ids = (ArrayList<Long>) getIds();
         Set<Long> idSet = new HashSet<>(ids);
         return (idSet.size() == ids.size());
     }
 
-    public static PriorityQueue<Route> convertFrom(Route[] array) {
+    public Route getMinElement() {
+        return collection.stream().min(new RouteComparator()).orElse(null);
+    }
+
+
+//    public static PriorityQueue<Route> convertFromArray(Route[] array) {
+//        PriorityQueue<Route> collection = new PriorityQueue<>();
+//        collection.addAll(Arrays.asList(array));
+//        return collection;
+//    }
+//
+//    public static Route[] convertToArray(PriorityQueue<Route> collection) {
+//        return collection.toArray(new Route[0]);
+//    }
+
+
+    /**
+     * Конвертировать лист в коллекцию
+     * @param list - лист
+     * @return - коллекция
+     */
+    public static PriorityQueue<Route> convertFromList(List<Route> list) {
         PriorityQueue<Route> collection = new PriorityQueue<>();
-        collection.addAll(Arrays.asList(array));
+        collection.addAll(list);
         return collection;
     }
 
-    public static boolean validateElement(Route el, boolean skipId) {
-        if (!skipId) {
-            if (!Route.checkId(el.getId())) {
-                System.out.println("Неверный id (возможно, он уже занят)");
-                return false;
-            }
+
+    public static List<Route> convertToList(PriorityQueue<Route> collection) {
+        return new ArrayList<>(collection);
+    }
+
+    public static boolean validateElement(Route el) {
+        if (!Route.checkId(el.getId())) {
+            System.out.println("Неверный id (возможно, он уже занят)");
+            return false;
         }
 
         if (!Route.checkName(el.getName())) {
@@ -143,7 +220,41 @@ public class RouteManager {
         return true;
     }
 
-    public static boolean validateElement(Route el) {
-        return validateElement(el, false);
+    public void removeAllByDistance(double distance) {
+        collection
+                .stream()
+                .filter(el -> (el.getDistance() == distance))
+                .forEach(RouteManager.getInstance()::removeElement);
+    }
+
+    public long countGreaterThanDistance(double distance) {
+        return collection
+                .stream()
+                .filter(el -> (el.getDistance() > distance))
+                .count();
+    }
+
+    public static void printCollection(PriorityQueue<Route> collection) {
+        List<Route> list = convertToList(collection);
+        if (collection.isEmpty()) {
+            System.out.println("Коллекция пуста!");
+        } else {
+            for (int i = 0; i < collection.size(); i++) {
+                System.out.printf("Элемент %s / %s:\n%s\n", i + 1, collection.size(), list.get(i));
+            }
+        }
+    }
+
+    public void printDescending() {
+        List<Route> list = RouteManager.convertToList(collection);
+        list.sort(new RouteComparator());
+        Collections.reverse(list);
+        if (collection.isEmpty()) {
+            System.out.println("Коллекция пуста!");
+        } else {
+            for (int i = 0; i < collection.size(); i++) {
+                System.out.printf("Элемент %s / %s:\n%s\n", i + 1, collection.size(), list.get(i));
+            }
+        }
     }
 }

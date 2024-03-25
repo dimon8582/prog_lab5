@@ -12,9 +12,10 @@ import commandManagers.RouteManager;
 import java.io.BufferedReader;
 import java.io.IOException;
 
-public class AddCommand implements Command {
-    private final String USAGE = "add ИЛИ add <элемент в формате .json>";
-    private final String DESC = "добавить новый элемент в коллекцию";
+public class UpdateCommand implements Command {
+
+    private static String USAGE = "update ИЛИ update <элемент в формате .json>";
+    private static String DESC = "обновить значение элемента коллекции, id которого равен заданному";
 
     @Override
     public void execute(ReadModes readMode, String[] args) {
@@ -22,8 +23,12 @@ public class AddCommand implements Command {
         if (args.length == 0) {
             try {
                 BufferedReader reader = InputManager.getConsoleReader();
-                Route element = RouteManager.buildNew(reader); // если с консоли
-                rm.addElement(element, true);
+                Route element = RouteManager.buildNew(reader, true);
+                if (readMode == ReadModes.CONSOLE) {
+                    rm.update(element, true); // если с консоли, уже отвалидировано
+                } else {
+                    System.out.printf("Некорректные аргументы, использование: %s\n", USAGE);
+                }
             } catch (IOException e) {
                 throw new RuntimeException(e);
             }
@@ -32,22 +37,26 @@ public class AddCommand implements Command {
             String path = args[0];
             try {
                 Route element = JSONManager.readElement(path);
-                RouteManager.getInstance().addElement(element);
+                rm.update(element);
             } catch (FailedValidationException | FailedJSONReadException e) {
                 System.out.println(e.getMessage());
                 return;
             }
         }
         if (readMode == ReadModes.CONSOLE) {
-            System.out.println("Добавлен элемент в коллекцию");
+            System.out.println("Обновлён элемент в коллекции");
         }
     }
 
+
+    @Override
     public String getDesc() {
         return DESC;
     }
 
+    @Override
     public String getUsage() {
         return USAGE;
     }
+
 }

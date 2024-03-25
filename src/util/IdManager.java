@@ -7,10 +7,14 @@ public class IdManager {
 
     public static long getId() {
         long maybeId;
-        do {
-            maybeId = currentUsedId++;
+        if (RouteManager.isInitialized()) {
+            do {
+                maybeId = currentUsedId++;
+            }
+            while (RouteManager.getInstance().getIds().contains(maybeId));
+            return maybeId;
+        } else {
+            return currentUsedId++;
         }
-        while (RouteManager.getInstance().getIds().contains(maybeId));
-        return maybeId;
     }
 }

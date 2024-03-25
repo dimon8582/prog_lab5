@@ -7,5 +7,5 @@ public class Main {
     }
 }
 
-// остальные команды
+// ctrl + d че делать то будем с этим?
 // javadoc

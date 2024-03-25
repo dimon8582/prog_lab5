@@ -14,6 +14,7 @@ public class SaveCommand implements Command {
             path = "test/collection.json";
         } else {
             path = args[0];
+            path = path.replaceAll("\"","");
         }
 
         JSONManager.writeCollection(path);

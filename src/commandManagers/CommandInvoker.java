@@ -24,9 +24,18 @@ public class CommandInvoker {
         commands.put("add", new AddCommand());
         commands.put("info", new InfoCommand());
         commands.put("show", new ShowCommand());
-        commands.put("update", new UpdateIdCommand());
+        commands.put("update", new UpdateCommand());
         commands.put("execute_script", new ExecuteScriptCommand());
         commands.put("save", new SaveCommand());
+        commands.put("remove_by_id", new RemoveByIdCommand());
+        commands.put("clear", new ClearCommand());
+        commands.put("exit", new ExitCommand());
+        commands.put("remove_first", new RemoveFirstCommand());
+        commands.put("add_if_min", new AddIfMinCommand());
+        commands.put("remove_greater", new RemoveGreaterCommand());
+        commands.put("remove_all_by_distance", new RemoveAllByDistanceCommand());
+        commands.put("count_greater_than_distance", new CountGreaterThanDistanceCommand());
+        commands.put("print_descending", new PrintDescendingCommand());
     }
 
     public static CommandInvoker getInstance() {
@@ -49,7 +58,7 @@ public class CommandInvoker {
 
     public void runCommand(String line, ReadModes readMode) {
         String[] tokens = line.split(" ");
-        Command command = commands.get(tokens[0]);
+        Command command = commands.get(tokens[0].toLowerCase());
         if (command != null) {
             if (tokens.length > 1) {
                 command.execute(readMode, Arrays.copyOfRange(tokens, 1, tokens.length));

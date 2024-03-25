@@ -24,6 +24,16 @@ public class Route implements Comparable {
         this.distance = distance;
     }
 
+    public Route(long id, String name, Coordinates coordinates, LocationFrom from, LocationTo to, double distance) {
+        this.id = id;
+        this.name = name;
+        this.coordinates = coordinates;
+        this.creationDate = new Date();
+        this.from = from;
+        this.to = to;
+        this.distance = distance;
+    }
+
     public long getId() {
         return id;
     }
@@ -78,7 +88,11 @@ public class Route implements Comparable {
 
 
     public static boolean checkId(long id) {
-        return (id > 0 && !RouteManager.getInstance().getIds().contains(id));
+        if (RouteManager.isInitialized()) {
+            return (id > 0 && !RouteManager.getInstance().getIds().contains(id));
+        } else {
+            return (id > 0);
+        }
     }
     public static boolean checkName(String name) {
         return (name != null && !name.isEmpty());

@@ -1,19 +1,20 @@
 package commandManagers.commands;
 
+import commandManagers.RouteManager;
 import enums.ReadModes;
 import interfaces.Command;
-import commandManagers.RouteManager;
 
-public class UpdateIdCommand implements Command {
-
-    private static String USAGE = "update <id> ИЛИ update <id>";
-    private static String DESC = "обновить значение элемента коллекции, id которого равен заданному";
+public class ClearCommand implements Command {
+    public static final String USAGE = "clear";
+    public static final String DESC = "очистить коллекцию";
     @Override
     public void execute(ReadModes readMode, String[] args) {
         RouteManager rm = RouteManager.getInstance();
-
+        rm.getCollection().clear();
+        if (readMode == ReadModes.CONSOLE) {
+            System.out.println("Коллекция очищена");
+        }
     }
-
 
     @Override
     public String getDesc() {
@@ -24,5 +25,4 @@ public class UpdateIdCommand implements Command {
     public String getUsage() {
         return USAGE;
     }
-
 }

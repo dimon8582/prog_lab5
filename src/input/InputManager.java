@@ -14,6 +14,7 @@ public class InputManager {
 
     public static BufferedReader getFileReader(String path) {
         try {
+            path = path.replaceAll("\"","");
             return new BufferedReader(new InputStreamReader(new FileInputStream(path)));
         } catch (FileNotFoundException e) {
             throw new RuntimeException(e);
