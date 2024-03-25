@@ -221,10 +221,11 @@ public class RouteManager {
     }
 
     public void removeAllByDistance(double distance) {
-        collection
-                .stream()
-                .filter(el -> (el.getDistance() == distance))
-                .forEach(RouteManager.getInstance()::removeElement);
+//        collection
+//                .stream()
+//                .filter(el -> (el.getDistance() == distance))
+//                .forEach(el -> RouteManager.getInstance().getCollection().remove(el));
+        collection.removeIf(el -> (el.getDistance() == distance));
     }
 
     public long countGreaterThanDistance(double distance) {

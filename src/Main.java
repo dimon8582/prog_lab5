@@ -6,6 +6,3 @@ public class Main {
         invoker.listenCommands();
     }
 }
-
-// ctrl + d че делать то будем с этим?
-// javadoc
