@@ -16,15 +16,23 @@ public class ExecuteScriptCommand implements Command {
             String path = args[0];
             path = path.replaceAll("\"","");
             try (BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(path)))) {
-//                if (readMode == ReadModes.CONSOLE) {
                     CommandInvoker invoker = CommandInvoker.getInstance();
                     String line;
                     while ((line = reader.readLine()) != null) {
-                        invoker.runCommand(line, readMode);
+                        if (readMode == ReadModes.CONSOLE) {
+                            invoker.clearScriptCounter();
+                        } else {
+                            invoker.scriptCount();
+                        }
+                        if (invoker.getScriptCounter() < invoker.SCRIPT_RECURSION_LIMIT) {
+                            invoker.runCommand(line, ReadModes.FILE);
+                        } else {
+                            // чтоб не спамило:
+                            if (invoker.getScriptCounter() == invoker.SCRIPT_RECURSION_LIMIT)
+                            System.out.println("Рекурсивный вызов скриптов!");
+                            break;
+                        }
                     }
-//                } else {
-
-//                }
             } catch (IOException e) {
 //                throw new RuntimeException(e);
                 System.out.println("Не удалось считать данные из файла (возможно, файл не найден)");

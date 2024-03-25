@@ -13,13 +13,11 @@ public class InfoCommand implements Command {
 
     @Override
     public void execute(ReadModes readMode, String[] args) {
-        if (readMode == ReadModes.CONSOLE) {
-            RouteManager rm = RouteManager.getInstance();
-            PriorityQueue<Route> collection = rm.getCollection();
-            System.out.printf("Тип коллекции: %s\n", collection.getClass().getName());
-            System.out.printf("Дата создания: %s\n", rm.getInitializationDate());
-            System.out.printf("Количество элементов: %s\n", collection.size());
-        }
+        RouteManager rm = RouteManager.getInstance();
+        PriorityQueue<Route> collection = rm.getCollection();
+        System.out.printf("Тип коллекции: %s\n", collection.getClass().getName());
+        System.out.printf("Дата создания: %s\n", rm.getInitializationDate());
+        System.out.printf("Количество элементов: %s\n", collection.size());
     }
 
 

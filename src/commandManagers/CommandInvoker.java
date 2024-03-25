@@ -15,6 +15,9 @@ public class CommandInvoker {
     private Map<String, Command> commands;
     private static CommandInvoker instance;
 
+    private int scriptCounter;
+    public final int SCRIPT_RECURSION_LIMIT = 10;
+
     private CommandInvoker() {
         RouteManager.getInstance();
 
@@ -43,6 +46,16 @@ public class CommandInvoker {
             instance = new CommandInvoker();
         }
         return instance;
+    }
+
+    public void clearScriptCounter() {
+        scriptCounter = 0;
+    }
+    public void scriptCount() {
+        scriptCounter++;
+    }
+    public int getScriptCounter() {
+        return scriptCounter;
     }
 
     public void listenCommands() {

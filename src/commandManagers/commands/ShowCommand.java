@@ -13,11 +13,9 @@ public class ShowCommand implements Command {
 
     @Override
     public void execute(ReadModes readMode, String[] args) {
-        if (readMode == ReadModes.CONSOLE) {
-            RouteManager rm = RouteManager.getInstance();
-            PriorityQueue<Route> collection = rm.getCollection();
-            RouteManager.printCollection(collection);
-        }
+        RouteManager rm = RouteManager.getInstance();
+        PriorityQueue<Route> collection = rm.getCollection();
+        RouteManager.printCollection(collection);
     }
 
 
